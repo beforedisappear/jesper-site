@@ -1,0 +1,27 @@
+{% load static %}
+
+<section id="blog">
+  
+  <!-- Articles Container -->
+   
+  <div class="articles-container">
+    {% for p in posts %}
+    <div class="article-box">
+      
+      <div class="article-img">
+        {% if p.content%}
+          <img src="{{p.content.url}}" alt="Article">
+        {% endif %}
+      </div>
+      <div class="article-text">
+        <span>{{p.time_create}} | <a href="{% url p.section %}">{{ p.get_section_display }}</a></span>
+        <a href="{{ p.get_absolute_url }}" class="article-title">{{p.title}}</a>
+        <p>{{p.subtitle}}</p>
+        <a href="{{ p.get_absolute_url }}">Подробнее...</a>
+      </div>    
+    </div>
+    {% endfor %}
+
+  </div>
+  
+</section>

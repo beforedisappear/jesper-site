@@ -1,0 +1,12 @@
+{% extends 'mainapp/base.html' %}
+{% load static %} 
+
+{% block content %}
+
+{% if request.user == thisuser %}
+<h1> настройка вашего профиля {{thisuser.username}} </h1>
+{% else %}
+<h1> Хорошие новости, мы не забыли проверку на права доступа в этом месте </h1>
+{% endif %}
+
+{% endblock %}

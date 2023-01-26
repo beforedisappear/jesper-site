@@ -1,0 +1,8 @@
+{% autoescape off %}
+
+Hello, {{ user.username }}!
+Для завершения регистрации перейдите по ссылке:
+http://{{domain}}{% url 'userverify' uidb64=uid token=token %} 
+
+
+{% endautoescape %}

@@ -1,0 +1,21 @@
+<!-- homepage template -->
+{% extends 'mainapp/base.html' %}
+
+<html>
+
+<head>
+   <meta charset='UTF-8'>
+</head>
+
+<body>
+
+{% block content %}
+
+<!--отображение статей-->
+{% include 'mainapp/list_articles.html' %}
+
+{% endblock %}
+
+</body>
+</html>
+

@@ -1,0 +1,16 @@
+<!--user page template-->
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<!--forms test-->
+<form action='{% url 'personal-page' %}' method='post' enctype='multipart/form-data'>
+   <!--method - метод скрытой передачи данных 
+      csrf_token  служит для защенной обработки формы-->
+   {% csrf_token %}
+   {{ form.as_p }}
+   <button type='submit'>Добавить</button>
+
+</form>
+{% endblock %}

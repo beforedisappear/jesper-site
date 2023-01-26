@@ -1,0 +1,16 @@
+{% extends 'mainapp/base.html' %}
+
+
+{% block content %}
+
+<form method="POST" class="input-group">
+   {% csrf_token %}
+
+   {% for f in form %}
+      <p>{{f.label}}{{f}}</p>
+      {{f.errors}}
+   {% endfor %}
+
+   <button type="submit">Sign up</button>
+</form>
+{% endblock %}

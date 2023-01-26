@@ -1,0 +1,184 @@
+<!-- base template (dry) -->
+{% load static %} <!-- загрузка тега для подключения внешних файлов -->
+
+<!DOCTYPE html>
+<html>
+
+<!-- хранение служебной информации о странице -->
+<head>
+
+  <title>{{ title }}</title>
+  <meta charset="UTF-8">
+  <!-- отображение сайта на других устройствах -->
+  <meta http-equiv="X-UA-Compatible" content="IE-edge">
+  <meta name="viewport" content="width=device-width, intial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- подключение файла оформления -->
+  <link type='text/css' href="{% static 'mainapp/css/style.css' %}" rel='stylesheet'>
+  <!-- иконки соц сетей -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  
+{% block mainmenu %}
+  <div class='wrapper'>
+    <div class='header'>
+      <div class='inner_header'>
+        <a href="{% url 'home' %}">
+          <div class='logo'>
+          <h1><span>IT</span>VERSE</h1>
+          </div>
+        </a>
+        <ul class='navigation'>
+          <a href="{% url 'economy' %}"><li>Экономика</li></a>
+          <a href="{% url 'dev' %}"><li>Разработка | IT</li></a>
+          <a href="{% url 'life' %}"><li>Жизнь</li></a>
+        </ul>
+        <ul class='authorization'>
+          {% if request.user.is_authenticated %}
+
+              {% comment %} 
+              <a href="{% url 'user-page' user.userslug %}"><li>Профиль</li></a>
+              <a href="{% url 'user-page-set' user.userslug %}"><li>Настройки</li></a>
+              <a href="{% url 'logout' %}"><li>Выход</li></a>
+              {% endcomment %}
+              
+              <li class="dropdown">
+                <button class="dropbtn"><img class="icon" src="{% static 'mainapp/images/icic.png' %}"></button>
+                <div class="dropdown-content">
+                  <a href="{% url 'user-page' user.userslug %}"><img class="icon2" src="{% static 'mainapp/images/user.png' %}">Профиль</a>
+                  <a href="{% url 'user-page-set' user.userslug %}"><img class="icon2" src="{% static 'mainapp/images/setting.png' %}">Настройки</a>
+                  <a href="{% url 'logout' %}"><img class="icon2" src="{% static 'mainapp/images/logout.png' %}">Выйти</a>
+                </div>
+              </li>
+
+              {% else %}
+
+              <a href="#popup" class='popup-link'><li>Вход</li></a>
+                
+              {% endif %}
+        </ul>    
+      </div>
+    </div>
+  </div>
+
+{% block content %}
+{% endblock %}
+
+    <footer class="footer">
+        <div class="footer-container">
+              <div class="row">
+                  <div class="footer-col">
+                    <h4>Категории</h4>
+                    <ul>
+                      <li><a href="{% url 'home' %}">Все новости</a></li>
+                      <li><a href="{% url 'economy' %}">Экономика</a></li>
+                      <li><a href="{% url 'dev' %}">Разработка | IT</a></li>
+                      <li><a href="{% url 'life' %}">Жизнь</a></li>
+                    </ul>
+                  </div>
+                  <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                      <li><a href="#">О сайте</a></li>
+                      <li><a href="#">Контакты</a></li>
+                      <li><a href="#">Реклама</a></li>
+                      <li><a href="#">Политика конфиденциальности</a></li>
+                    </ul>
+                  </div>
+                  <div class="footer-col">
+                    <h4>Социальные сети</h4>
+                    <div class="social-links"> 
+                      <a href="https://t.me/jespersite"><i class="fab fa-telegram"></i></a>
+                      <a href="{% url 'home' %}"><i class="fab fa-instagram"></i></a>
+                    </div>
+                  </div>
+              </div>
+        </div>
+    </footer>
+
+<!--popup navbar-->
+<div id="popup" class="popup">
+  <div class="popup__body">
+    <div class="popup__content">
+      <a href="#header" class="popup__close close-popup">+</a>
+      <div class="popup__title">ITVERSE | АВТОРИЗАЦИЯ</div>
+        <div class='box-btns'>
+
+        <form id="logform" method="POST" class="input-group" action="{% url 'home' %}">
+            {% for l in log_ajax %}
+              <div id="response2" class="errors">{{l.errors}}</div>
+              <p>{{l.label}}</p>
+              <p>{{l}}</p>
+            {% endfor %}
+
+            {% csrf_token %}
+            <button type="submit" id="#login" name="logformsubmit" valie='value'>Sign in</button>
+            <br></br>
+        </form>
+
+          <!--social auth-->
+          <a href="{% url "social:begin" "google-oauth2" %}" class="btn_google">
+            <img src="{% static 'mainapp/images/google.png' %}" width='21px' height='21px'>&nbspВойти через Google
+          </a>
+          <a class='btn_telegram'>
+            <script async src="https://telegram.org/js/telegram-widget.js?21" data-userpic="false" data-telegram-login="jespersitebot" data-size="medium" data-auth-url="http://mysite.com/social-auth/complete/telegram" data-request-access="write"></script>
+          </a>
+
+        <a href="#popup_2" class='popup-link'><li>Нет аккаунта? Зарегистрироваться!</li></a>
+
+        </div>
+      </div>  
+    </div>
+  </div>
+</div>
+
+<div id="popup_2" class="popup">
+  <div class="popup__body">
+    <div class="popup__content">
+      <a href="#header" class="popup__close close-popup">+</a>
+      <div class="popup__title">ITVERSE | РЕГИСТРАЦИЯ</div>
+        <div class='box-btns'>
+          
+          <form id="regform" method="POST" class="input-group" action="{% url 'home' %}">
+            
+            {% csrf_token %}
+            <div id="emailverify" class="errors"></div>
+            {% for f in reg_ajax %}
+              <div id="response" class="errors">{{f.errors}}</div>
+              <p>{{f.label}}{{f}}</p>
+            {% endfor %}
+
+            <button type="submit" id="#send-button" name='button'>Sign up</button>
+         </form>
+
+          <a href="#popup" class='popup-link'><li>Есть аккаунт? Войти!</li></a>
+
+        </div>
+      </div>  
+    </div>
+  </div>
+</div>
+
+<!--popup navbar-->
+<div id="popup_s" class="popup">
+  <div class="popup__body">
+    <div class="popup__content">
+      <a href="#header" class="popup__close close-popup">+</a>
+        <p align='center'>УСПЕШНАЯ РЕГИСТРАЦИЯ!</p>
+        <p>На ваш Email было отправлено письмо с подтверждением.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script language="JavaScript" src="{% static 'mainapp/js/main.js' %}"></script>
+{% endblock mainmenu %} 
+
+
+</body>
+
+</html>

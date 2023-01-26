@@ -1,0 +1,61 @@
+<!--user page template-->
+{% extends 'mainapp/base.html' %}
+{% load static %} 
+
+{% block content %}
+
+<div class="container bootstrap snippets bootdey">
+    <div class="row">
+        <div class="panel">
+            <div class="cover-photo">
+                <div class="fb-timeline-img">
+                    {% if thisuser.theme %}
+                    <img src="{{ thisuser.theme.url }}" alt="user-page-background">
+                    {% endif %}
+                </div>
+                <div class="fb-name">
+                    <h2><a href="#">{{thisuser.username}}</a></h2>
+                    {% if user == thisuser %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="profile-thumb">
+                    {% if thisuser.userpic %}
+                    <img src="{{ thisuser.userpic.url }}" alt="userpic">
+                    {% endif %}
+                </div>
+
+                <!--https://getbootstrap.com/docs/5.2/components/navs-tabs/-->
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                    <!--раздел по умолчанию-->
+                    <!--в разделе статьи вывод стандартной модели из list_article -->
+                      <a class="nav-link active" aria-current="page" href="#">Статьи</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Подписчики</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Комментарии</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="panel profile-info">
+            <form>
+                <textarea class="form-control input-lg p-text-area" rows="2" placeholder="Whats in your mind today?"></textarea>
+            </form>
+            <footer class="panel-footer">
+                <ul class="nav nav-pills">
+                    <li type="button" class="btn btn-info pull-right">Post</li>
+                </ul>
+            </footer>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}

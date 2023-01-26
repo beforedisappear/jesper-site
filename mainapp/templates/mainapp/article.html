@@ -1,0 +1,205 @@
+<!--site article template-->
+{% extends 'mainapp/base.html' %}
+{% load mainapp_tags %}
+{% load mptt_tags %}
+
+{% block content %}
+
+{% comment %} 
+<div class="container bootstrap snippets bootdey">
+   <div class="row justify-content-md-center">
+      <div class="col-md-8">
+         <div class="col-sm-12">
+            <div class="panel panel-white post panel-shadow">
+               <div class="post-heading">
+
+                  <!--user avatar--
+                  <div class="pull-left image">
+                     <a href="{% url 'user-page' post.author.userslug %}">
+                        <img src="{{post.author.userpic.url}}" class="img-circle avatar" alt="user profile image">
+                     </a>
+                  </div>
+                  <!--info about creator--
+                  <div class="pull-left meta">
+                     <div class="title h5">
+                        <a href="{% url 'user-page' post.author.userslug %}"><b>{{post.author}}</b></a>
+                     </div>
+                     <h6 class="text-muted time">{{post.time_create}}</h6>
+                  </div>
+                      
+               </div>
+
+               <!--title and subtitle--
+               <div class="post-description"> 
+                  <div class="title h3">
+                     {{post.title}}
+                  </div>
+                  <div class="title h5">
+                     <p>{{post.subtitle}}</p>
+                  </div>
+               </div>
+
+               {% if post.content %}
+               <!--article media--
+               <div class="post-image">
+                  <img src="{{post.content.url}}" class="image" alt="image post">
+               </div>
+               {% endif %}
+               
+               <div class="post-description">
+                  <div class="title h5">
+                     <p align="justify">{{post.text}}</p>
+                  </div>
+                  <!-- likes and reposts --
+                  <div class="stats">
+                     <a href="#" class="btn btn-default stat-item"><i class="fa fa-thumbs-up icon"></i>{{likes.count}}</a>
+                     <a href="#" class="btn btn-default stat-item"><i class="fa fa-share icon"></i>128</a>
+                 </div>
+               </div>
+
+               <div class="post-footer">
+
+                  <!--comments fields-->
+                  {% if request.user.is_authenticated%}
+                  <form class="input-group" method="POST">
+                     {% csrf_token %}
+                     {{ form.as_p }}
+                     <span class="input-group-addon">
+                     <button type="submit">
+                        <a href="#"><i class="fa fa-edit"></i></a>  
+                     </button>
+                     </span>
+                  </form>
+                  {% endif %}
+
+                  <!--comments--
+                  <ul class="comments-list">
+
+                     {% for c in comments %}
+
+                     <li class="comment">
+                        <a class="pull-left" href="{% url 'user-page' c.author.userslug %}">
+                           <img class="avatar" src="{{c.author.userpic.url}}" alt="userpic">
+                        </a>
+                        <div class="comment-body">
+                           <div class="comment-heading">
+                                 <a href="{% url 'user-page' c.author.userslug %}"><h4 class="user">{{c.author}}</h4></a>
+                                 <a><h5 class="time">{{c.time_create}}</h5></a>
+                           </div>
+                           <p>{{c.text}}</p>
+                        </div>
+                     </li>
+
+                     {% endfor %}
+
+                  </ul>
+
+               </div>
+               
+            </div>
+         </div>
+      </div>
+   </div>
+</div> -->
+ {% endcomment %}
+
+<section class="blog-post section-header-offset">
+   <div class="blog-post-container container">
+      <div class="blog-post-data">
+         <h3 class="title blog-post-title">Is VR the future?</h3>
+         <div class="article-data">
+            <span>Dec 6th 2021</span>
+            <span class="article-data-spacer"></span>
+            <span>4 Min read</span>
+         </div>
+         <img src="#" alt="">
+      </div>
+
+      <div class="container">
+         <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis eius possimus hic eligendi distinctio rerum incidunt, esse quasi eum molestiae ducimus ipsam quae, aliquid ullam placeat dolorum nulla vero. Quam? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sapiente repellat consequatur culpa, repudiandae aut dolores iusto. Rem natus soluta, dolores, ad deleniti, aut dolorem corrupti quasi amet unde delectus hic?
+         </p>
+           
+         <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis eius possimus hic eligendi distinctio rerum incidunt, esse quasi eum molestiae ducimus ipsam quae, aliquid ullam placeat dolorum nulla vero. Quam? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero quod necessitatibus, aspernatur pariatur asperiores earum quas adipisci veritatis quidem facilis! Nihil veniam quaerat nulla possimus, asperiores vero voluptatum placeat. Eveniet!
+         </p>
+
+         <blockquote class="quote">
+            <p><span><i class="ri-double-quotes-l"></i></span> Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia voluptates, laboriosam voluptatum quos non consequuntur nesciunt necessitatibus tempora quod inventore corporis rem nihil itaque, at provident minus aliquam veritatis. Labore?  <span><i class="ri-double-quotes-r"></i></span></p>
+         </blockquote>
+       
+         <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis eius possimus hic eligendi distinctio rerum incidunt, esse quasi eum molestiae ducimus ipsam quae, aliquid ullam placeat dolorum nulla vero. Quam? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero quod necessitatibus, aspernatur pariatur asperiores earum quas adipisci veritatis quidem facilis! Nihil veniam quaerat nulla possimus, asperiores vero voluptatum placeat. Eveniet!
+         </p>
+
+         <div class="author d-grid">
+            <div class="author-image-box">
+               <img src="#" alt="" class="article-image">
+            </div>
+            <div class="author-about">
+               <h3 class="author-name">John Doe</h3>
+               <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque quis repellat rerum, possimus cumque dolor repellendus eligendi atque explicabo exercitationem id.</p>
+                  <ul class="list social-media">
+                     <li class="list-item">
+                        <a href="#" class="list-link"><i class="ri-instagram-line"></i></a>
+                     </li>
+                     <li class="list-item">
+                        <a href="#" class="list-link"><i class="ri-facebook-circle-line"></i></a>
+                     </li>
+                     <li class="list-item">
+                        <a href="#" class="list-link"><i class="ri-twitter-line"></i></a>
+                     </li>
+                  </ul>
+            </div>
+         </div>
+      </div>
+
+      <p>ЛАЙКИ : {{likes.count}}</p>
+
+      {% if request.user.is_authenticated%}
+         <form class="input-group" method="POST" id="newcom">
+         {% csrf_token %}
+         {{ form.as_p }}
+            <span class="input-group-addon">
+               <button type="submit">
+                  <a href="#"><i class="fa fa-edit"></i></a>  
+               </button>
+            </span>
+         </form>
+      {% endif %}
+
+
+      {% recursetree comments  %}
+      <a href="{% url 'user-page' node.author.userslug %}"><h4>{{node.author.username}}</h4></a>
+      
+      <a><h5>{{node.time_create}}</h5></a>
+      <p>{{node.text}}</p>
+
+      {% if request.user.is_authenticated%}
+      <button type="submit" class="btn" onclick="openForm({{node.id}})">ответить</button> 
+      <div class="form-popup" id="myForm_{{node.id}}">
+      <form class="input-group" method="POST" id="answercom_{{node.id}}"> 
+         {% csrf_token %}
+         <textarea name="text" cols="61" rows="3" class="form-control" placeholder="Add your comment here" style="resize:none;" required=""></textarea>
+         <select name="parent" id="id_parent_{{node.id}}">
+            <option value="{{node.id}}" selected="">{{node.id}}</option>
+          </select>
+          <button type="submit">
+            <a href="#"><i class="fa fa-edit"></i></a>  
+         </button> 
+      </form>
+      <button type="submit" class="btn" onclick="closeForm({{node.id}})">закрыть</button>
+      <br></br>
+      </div>
+      {% endif %}
+      
+      {% if not node.is_leaf_node %}
+         {{children}}
+      {% endif %}
+
+      {% endrecursetree %}
+
+   </div>
+</section>
+
+{% endblock %}

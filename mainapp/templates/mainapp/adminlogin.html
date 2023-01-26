@@ -1,0 +1,15 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<h1> ВЫ УЖЕ АВТОРИЗОВАНЫ </h1>
+{% else %}
+<form method="post">
+   {% csrf_token %}
+   {{form.as_p}}
+   <button type='submit'>Войти</button>
+</form>
+{% endif %}
+
+{% endblock %}
