@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import *
 
 class UserAdmin(BaseUserAdmin):
-   list_display = ('username', 'email', 'is_active', 'is_staff', 'is_superuser', 'date_joined')
+   list_display = ('username', 'email', 'is_active', 'is_staff', 'email_verify', 'date_joined', 'is_superuser',)
    #добавляем отображение кастомных полей в админке
    fieldsets = (
     (None, {'fields': ('email','username', 'password')}),

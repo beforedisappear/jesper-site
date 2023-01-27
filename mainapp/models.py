@@ -4,21 +4,16 @@ from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
-from social.apps.django_app.default.models import UserSocialAuth
+from .utils import user_directory_path, correct_email
 from mptt.models import MPTTModel, TreeForeignKey
 from uuslug import uuslug, slugify
-
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/users/user_<username>/<filename>
-    return 'users/user_{0}/{1}'.format(instance.username, filename)
-
+#from django.contrib.auth import BACKEND_SESSION_KEY
 
 class CustomAccountManager(BaseUserManager):
-   def create_user(self, _email, username, password = None, **other_fields):
+   def create_user(self, email, username, password=None, **other_fields):
       if not email:
          raise ValueError(_('Please provide an email address'))
-      email=self.normalize_email(_email)
-      user=self.model(email=email,username=username,**other_fields)
+      user=self.model(username=username, email=correct_email(email), **other_fields)
       user.set_password(password)
       user.save()
       return user

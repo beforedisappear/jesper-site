@@ -1,10 +1,10 @@
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator as gtoken
+from django.contrib.auth.views import LoginView, PasswordResetView
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, DetailView
-from django.http import JsonResponse, HttpResponse
-from django.contrib.auth.views import LoginView, PasswordResetView
 from django.views.generic.edit import FormMixin
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 
 from base64 import urlsafe_b64decode
@@ -15,7 +15,7 @@ from .utils import *
 # main page
 class HomePage(ListView, FormMixin):
     model = get_user_model()
-    form_class = AuthenticationForm
+    form_class = UserAuthentication
     context_object_name = 'posts'
     template_name = 'mainapp/index.html'
     success_url = reverse_lazy('home')
@@ -27,9 +27,12 @@ class HomePage(ListView, FormMixin):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
         return context
+    
+    def is_form_valid(self):
+        """Return True if the form has no errors, or False otherwise."""
+        return self.is_bound and not self.errors
 
     def post(self, request, *args, **kwargs):
-        
         #authorization
         if len(request.POST) == 3:
             self.form = self.get_form()
@@ -41,29 +44,28 @@ class HomePage(ListView, FormMixin):
                     login(request, user)
                     return JsonResponse(data={}, status=201)
                 else:
-                    return JsonResponse(data={'errors':{'email': 'unverified email'}}, status=400)
+                    return JsonResponse(data={'errors':{'email': 'Аккаунт не активен!'}}, status=400)
             else:
                 return JsonResponse(data={'errors': self.form.errors, }, status=400)
         
         #registration
         elif len(request.POST) == 5:
             self.form_class = UserRegistration
-            self.form = self.get_form() # if method == 'POST' else empty form)
+            self.form = self.get_form()
             if self.form.is_valid():
                 self.object = self.form.save()
                 mail = self.form.cleaned_data.get('email')
-                pas = self.form.cleaned_data.get('password1')
-                user = authenticate(email = mail, password = pas)
-                send_mail_for_verify(request, user)
-                if user is not None:
-                    #login(request, user)
-                    return JsonResponse(data={'message':'Please, confirm your Email!'}, status=201)
+                self.object.email = mail.lower()
+                self.object.save()
+                send_mail_for_verify(request, self.object)
+                return JsonResponse(data={}, status=201)
             else:
-                return JsonResponse(data={'errors': self.form.errors, }, status=400)
+                return JsonResponse(data={'errors': self.form.errors,}, status=400)
+            
         else:
             return HttpResponse('error')
-        
-        
+    
+
 class economy(ListView):
     template_name = 'mainapp/economy.html'
     context_object_name = 'posts'
@@ -139,7 +141,7 @@ class ShowArticle(FormMixin, DetailView):
    
    
 class AdminLogin(LoginView):
-    form_class = AuthenticationForm                  # форма авторизации пользователя
+    form_class = UserAuthentication                  # форма авторизации пользователя
     template_name = 'mainapp/adminlogin.html'
     
     def get_context_data(self, *, object_list=None, **kwargs):

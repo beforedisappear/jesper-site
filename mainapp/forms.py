@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 from .models import *
@@ -58,7 +59,12 @@ class UserRegistration(UserCreationForm):
         self.fields['username'].help_text = ''
         self.fields['password1'].help_text = ''
         self.fields['password2'].help_text = ''
-        
+
+   def clean(self):
+      email = self.cleaned_data.get('email')
+      if MyUser.objects.filter(email=email.lower()).exists():
+         raise ValidationError("Данный Email уже занят!")
+      return self.cleaned_data
         
    class Meta(UserCreationForm.Meta):
       model = get_user_model()
@@ -68,4 +74,8 @@ class UserRegistration(UserCreationForm):
       }
       
 class UserAuthentication(AuthenticationForm):
-   pass
+   # email = username
+   def clean(self):
+      data = self.data.copy()
+      data['username'] = data['username'].lower()
+      return data
