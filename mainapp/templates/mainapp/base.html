@@ -116,9 +116,12 @@
             {% endfor %}
 
             {% csrf_token %}
-            <button type="submit" id="#login" name="logformsubmit" valie='value'>Sign in</button>
-            <br></br>
+            <button type="submit" id="#send-login" name="logformsubmit" valie='value'>Sign in</button>
         </form>
+
+          <a href="#popup_3" class="popup-link"><li>Забыли пароль?</li></a>
+          <a href="#popup_2" class="popup-link"><li>Нет аккаунта? Зарегистрироваться!</li></a>
+          <br></br>
 
           <!--social auth-->
           <a href="{% url "social:begin" "google-oauth2" %}" class="btn_google">
@@ -127,8 +130,6 @@
           <a class='btn_telegram'>
             <script async src="https://telegram.org/js/telegram-widget.js?21" data-userpic="false" data-telegram-login="jespersitebot" data-size="medium" data-auth-url="http://mysite.com/social-auth/complete/telegram" data-request-access="write"></script>
           </a>
-
-        <a href="#popup_2" class='popup-link'><li>Нет аккаунта? Зарегистрироваться!</li></a>
 
         </div>
       </div>  
@@ -152,10 +153,10 @@
               <p>{{f.label}}{{f}}</p>
             {% endfor %}
 
-            <button type="submit" id="#send-button" name='button'>Sign up</button>
-         </form>
+            <button type="submit" id="#send-reg" name='button'>Sign up</button>
+          </form>
 
-          <a href="#popup" class='popup-link'><li>Есть аккаунт? Войти!</li></a>
+          <a href="#popup" class="popup-link"><li>Есть аккаунт? Войти!</li></a>
 
         </div>
       </div>  
@@ -163,13 +164,40 @@
   </div>
 </div>
 
-<!--popup navbar-->
 <div id="popup_s" class="popup">
   <div class="popup__body">
     <div class="popup__content">
       <a href="#header" class="popup__close close-popup">+</a>
         <p align='center'>УСПЕШНАЯ РЕГИСТРАЦИЯ!</p>
         <p>На ваш Email было отправлено письмо с подтверждением.</p>
+    </div>
+  </div>
+</div>
+
+<div id="popup_3" class="popup">
+  <div class="popup__body">
+    <div class="popup__content">
+      <a href="#header" class="popup__close close-popup">+</a>
+      <div class="popup__title">ITVERSE | ВОССТАНОВЛЕНИЕ ДОСТУПА</div>
+        <form id="resetform" method="POST" class="input-group" action="{% url 'home' %}">
+          {% csrf_token %}
+          <div id="usernotfound" class="errors"></div>
+          {% for r in reset_ajax %}
+            <div id="response3" class="errors">{{r.errors}}</div>
+            <p>{{r.label}}{{r}}</p>
+          {% endfor %}
+          <button type="submit" id="#send-reset" name='button'>Отправить</button>
+        </form>
+      </div>  
+    </div>
+  </div>
+</div>
+
+<div id="popup_o" class="popup">
+  <div class="popup__body">
+    <div class="popup__content">
+      <a href="#header" class="popup__close close-popup">+</a>
+        <p>Мы отправили письмо с инструкцией для смены пароля.</p>
     </div>
   </div>
 </div>

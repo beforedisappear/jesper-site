@@ -190,16 +190,12 @@ $(function ($){
             window.location.reload();
          },
          error: function (response) {
-            console.log('err - ', response);
+            //console.log('err - ', response);
 
             var data = JSON.parse(JSON.stringify(response['responseJSON']));
-            console.log(data['errors']);
             $.each(data['errors'], function( key, value ) {
                $("#response2").text( value ).append().fadeIn();
            });
-
-            
-            
          }
       })
    })
@@ -240,6 +236,31 @@ $(function ($){
    })
 })
 
+$(function ($){
+   $('#resetform').submit(function (e) {
+      e.preventDefault()
+      $.ajax({
+         type: this.method,
+         url: this.action,
+         data: $(this).serialize(),
+         headers: {'X-CSRFToken': getCookie('csrftoken')},
+         dataType: 'json',
+         success: function (response) {
+            const curPopup = document.getElementById('popup_o');
+            popupOpen(curPopup);
+         },
+         error: function (response) {
+            console.log('err - ', response);
+            var data = JSON.parse(JSON.stringify(response['responseJSON']));
+            $.each(data['errors'], function( key, value ) {
+               $("#response3").text(value).append().fadeIn();
+           });
+         }
+      })
+   })
+})
+
+// comment form
 function openForm(com_id) {
    console.log("myForm_"+com_id)
    document.getElementById("myForm_"+com_id).style.display = "block";

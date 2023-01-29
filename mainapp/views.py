@@ -1,11 +1,12 @@
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator as gtoken
-from django.contrib.auth.views import LoginView, PasswordResetView
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
+from django.core.mail import BadHeaderError
 
 from base64 import urlsafe_b64decode
 from .forms import *
@@ -27,12 +28,9 @@ class HomePage(ListView, FormMixin):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
         return context
-    
-    def is_form_valid(self):
-        """Return True if the form has no errors, or False otherwise."""
-        return self.is_bound and not self.errors
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         #authorization
         if len(request.POST) == 3:
             self.form = self.get_form()
@@ -61,6 +59,21 @@ class HomePage(ListView, FormMixin):
                 return JsonResponse(data={}, status=201)
             else:
                 return JsonResponse(data={'errors': self.form.errors,}, status=400)
+           
+        #restoring account access
+        elif len(request.POST) == 2:
+            self.form_class = PasswordResetForm
+            self.form = self.get_form()
+            if self.form.is_valid():
+                data = self.form.cleaned_data.get('email')
+                try:
+                    user = MyUser.objects.get(email = data)
+                    send_mail_for_reset(request, user)
+                    return JsonResponse(data={}, status=201)
+                except:
+                    return JsonResponse(data={'errors': {'email': 'Аккаунт не найден!'}}, status=400)
+            else:
+                return JsonResponse(data={'errors': {'email': 'Некорректный email адрес!'}}, status=400)
             
         else:
             return HttpResponse('error')
@@ -139,18 +152,6 @@ class ShowArticle(FormMixin, DetailView):
         self.object.save()
         return super().form_valid(form)
    
-   
-class AdminLogin(LoginView):
-    form_class = UserAuthentication                  # форма авторизации пользователя
-    template_name = 'mainapp/adminlogin.html'
-    
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)    #получаем сформированный контекст
-        context['title'] = 'Авторизация'
-        return context
-    
-    def get_success_url(self):
-        return reverse_lazy('home')
     
 class userpage(DetailView):
     model = get_user_model()
@@ -178,15 +179,6 @@ class userpagesettings(DetailView):
         context['title'] = 'Настройки пользователя'
         return context
 
-# обработка исключения при несовпадении шаблона
-def PageNotFound(request, exception):
-    return render(request, 'mainapp/error.html')
-
-# выход
-def logout_user(request):
-    logout(request)
-    return redirect('/')
-
 class EmailVerify(LoginView):
 
     def get(self, request, uidb64, token):
@@ -210,4 +202,13 @@ class EmailVerify(LoginView):
     
 class PasswordReset(PasswordResetView):
     pass
-    
+
+
+# обработка исключения при несовпадении шаблона
+def PageNotFound(request, exception):
+    return render(request, 'mainapp/error.html')
+
+# выход
+def logout_user(request):
+    logout(request)
+    return redirect('/')
