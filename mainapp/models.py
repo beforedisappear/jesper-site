@@ -7,12 +7,12 @@ from django.utils.translation import gettext_lazy as _
 from .utils import user_directory_path, correct_email
 from mptt.models import MPTTModel, TreeForeignKey
 from uuslug import uuslug, slugify
-#from django.contrib.auth import BACKEND_SESSION_KEY
 
 class CustomAccountManager(BaseUserManager):
    def create_user(self, email, username, password=None, **other_fields):
       if not email:
-         raise ValueError(_('Please provide an email address'))
+         email = username + '@telegram.com'
+         #raise ValueError(_('Please provide an email address'))
       user=self.model(username=username, email=correct_email(email), **other_fields)
       user.set_password(password)
       user.save()
@@ -31,7 +31,7 @@ class CustomAccountManager(BaseUserManager):
      
 class MyUser(AbstractBaseUser, PermissionsMixin):
    email = models.EmailField(_('Email'), unique=True)
-   username= models.CharField(_('UserName'), max_length=25, unique=True, db_index=True)
+   username= models.CharField(_('UserName'), max_length=25, db_index=True)
    first_name = models.CharField(_('First Name'), max_length=25, blank=True)
    last_name = models.CharField(_('Last Name'), max_length=25, blank=True)
    is_staff = models.BooleanField(_('Is staff'), default=False)
@@ -51,7 +51,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
    REQUIRED_FIELDS=['username'] # запрашиваемое поле при вызове createsuperuser
 
    def __str__(self):
-       return self.email
+      return self.email
     
    def save(self, *args, **kwargs):
       if self.is_superuser:                                                               #slug for superuser                                      
@@ -71,8 +71,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
          
    def get_absolute_url(self):
         return reverse('user-page', args=[self.userslug])
-   
-
+     
    class Meta:
       verbose_name = 'Пользователь'
       verbose_name_plural = 'Пользователи'

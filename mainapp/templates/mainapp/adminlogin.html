@@ -2,14 +2,16 @@
 
 {% block content %}
 
-{% if request.user.is_authenticated %}
-<h1> ВЫ УЖЕ АВТОРИЗОВАНЫ </h1>
-{% else %}
-<form method="post">
-   {% csrf_token %}
-   {{form.as_p}}
-   <button type='submit'>Войти</button>
-</form>
-{% endif %}
+	<!--Reset Password-->
+	<div class="container p-5">
+  	 	<h2 class="font-weight-bold mt-3">Reset Password</h2>
+		<hr>
+		<p>Forgotten your password? Enter your email address below, and we'll email instructions for setting a new one.</p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ password_reset_form.as_p }}                    
+            <button class="btn btn-primary" type="submit">Send email</button>
+        </form>
+  	</div> 
 
 {% endblock %}
