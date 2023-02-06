@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
@@ -81,4 +81,7 @@ class UserAuthentication(AuthenticationForm):
       return data
    
 class UserPasswordReset(PasswordResetForm):
+   pass
+
+class UserPasswordSet(SetPasswordForm):
    pass

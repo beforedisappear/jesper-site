@@ -1,12 +1,11 @@
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator as gtoken
-from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
+from django.views.generic.edit import FormMixin, FormView
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import FormMixin
-from django.http import JsonResponse, HttpResponse
+from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.core.mail import BadHeaderError
 
 from base64 import urlsafe_b64decode
 from .forms import *
@@ -30,7 +29,6 @@ class HomePage(ListView, FormMixin):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         #authorization
         if len(request.POST) == 3:
             self.form = self.get_form()
@@ -65,7 +63,7 @@ class HomePage(ListView, FormMixin):
             self.form_class = PasswordResetForm
             self.form = self.get_form()
             if self.form.is_valid():
-                data = self.form.cleaned_data.get('email')
+                data = self.form.cleaned_data.get('email').lower()
                 try:
                     user = MyUser.objects.get(email = data)
                     send_mail_for_reset(request, user)
@@ -192,18 +190,61 @@ class EmailVerify(LoginView):
             return HttpResponse('error registration')
     
     def get_user(self, uidb64):
-        uid = urlsafe_b64decode(uidb64[1::]).decode()
         try:
+            uid = urlsafe_b64decode(uidb64[1::]).decode()
+            user = MyUser.objects.get(pk = uid)
+        except (TypeError, ValueError, OverflowError, MyUser.DoesNotExist, forms.ValidationError):
+            user = None
+        return user
+
+INTERNAL_RESET_SESSION_TOKEN = "_password_reset_token"
+
+class PasswordResetConfirm(FormView):
+    form_class = UserPasswordSet
+    success_url = reverse_lazy("home")
+    template_name = "mainapp/password_reset_confirm.html"
+    reset_url_token = "set-password"
+    
+    def dispatch(self, *args, **kwargs):
+        self.validlink = False
+        self.user = self.get_user(kwargs['uidb64'])
+        
+        if self.user is not None:
+            token = kwargs["token"]
+            if token == self.reset_url_token:
+                session_token = self.request.session.get(INTERNAL_RESET_SESSION_TOKEN)
+                if gtoken.check_token(self.user, session_token):
+                    self.validlink = True
+                    return super().dispatch(*args, **kwargs)
+            
+            else:
+                if gtoken.check_token(self.user, token):
+                    self.request.session[INTERNAL_RESET_SESSION_TOKEN] = token
+                    redirect_url = self.request.path.replace(token, self.reset_url_token)
+                    return HttpResponseRedirect(redirect_url)    
+        
+        return HttpResponse('reset error')
+    
+    def get_user(self, uidb64):
+        try:
+            uid = urlsafe_b64decode(uidb64[1::]).decode()   
             user = MyUser.objects.get(pk = uid)
         except (TypeError, ValueError, OverflowError, MyUser.DoesNotExist, forms.ValidationError):
             user = None
         return user
     
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.user 
+        return kwargs
     
-class PasswordReset(PasswordResetView):
-    pass
+    def form_valid(self, form):
+        user = form.save()
+        del self.request.session[INTERNAL_RESET_SESSION_TOKEN]
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return super().form_valid(form)
 
-
+    
 # обработка исключения при несовпадении шаблона
 def PageNotFound(request, exception):
     return render(request, 'mainapp/error.html')

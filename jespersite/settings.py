@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'social_django.middleware.SocialAuthExceptionMiddleware', #debug false
+    #'social_django.middleware.SocialAuthExceptionMiddleware', #debug false
 ]
 
 ROOT_URLCONF = 'jespersite.urls'
