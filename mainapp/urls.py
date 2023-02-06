@@ -18,4 +18,5 @@ urlpatterns = [
     path('account/active/<uidb64>/<token>/', EmailVerify.as_view(), name='userverify'),
     path('account/reset/<uidb64>/<token>/', PasswordResetConfirm.as_view(), name='userpasswordreset'),
     path('social-auth/', include('social_django.urls', namespace='social')),
- ]
+
+]

@@ -6,6 +6,7 @@ from django.views.generic.edit import FormMixin, FormView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
+from django.core.mail import BadHeaderError
 
 from base64 import urlsafe_b64decode
 from .forms import *
@@ -29,6 +30,7 @@ class HomePage(ListView, FormMixin):
         return context
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         #authorization
         if len(request.POST) == 3:
             self.form = self.get_form()
