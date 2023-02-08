@@ -6,7 +6,6 @@ from django.views.generic.edit import FormMixin, FormView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.core.mail import BadHeaderError
 
 from base64 import urlsafe_b64decode
 from .forms import *

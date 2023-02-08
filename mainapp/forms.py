@@ -1,9 +1,5 @@
 from django import forms
-<<<<<<< HEAD
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm
-=======
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
->>>>>>> d818b8566e67dcfd88ea7bab4b40e4e9816fed51
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
@@ -85,10 +81,7 @@ class UserAuthentication(AuthenticationForm):
       return data
    
 class UserPasswordReset(PasswordResetForm):
-<<<<<<< HEAD
    pass
 
 class UserPasswordSet(SetPasswordForm):
-=======
->>>>>>> d818b8566e67dcfd88ea7bab4b40e4e9816fed51
    pass
