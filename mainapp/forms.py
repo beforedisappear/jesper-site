@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm, UserChangeForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
@@ -85,3 +85,14 @@ class UserPasswordReset(PasswordResetForm):
 
 class UserPasswordSet(SetPasswordForm):
    pass
+
+class UserChangeCustom(UserChangeForm):
+   
+   def __init__(self, *args, **kwargs):
+      super(UserChangeForm, self).__init__(*args, **kwargs)
+      del self.fields['password']
+   
+   class Meta:
+      model = get_user_model()
+      fields = ('email', 'username', 'userpic', 'theme', 'description')
+      

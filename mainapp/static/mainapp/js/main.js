@@ -222,7 +222,7 @@ $(function ($){
 
          },
          error: function (response) {
-            //console.log('err - ', response);
+            console.log('err - ', response);
             // var data = JSON.parse(JSON.stringify(response['responseJSON']));
             // for (const [key, value] of Object.entries(data['errors'])) {
             //    $("#response").replaceWith(value);
@@ -254,6 +254,28 @@ $(function ($){
             var data = JSON.parse(JSON.stringify(response['responseJSON']));
             $.each(data['errors'], function( key, value ) {
                $("#response3").text(value).append().fadeIn();
+           });
+         }
+      })
+   })
+})
+
+$(function ($){
+   $('#resetform2').submit(function (e) {
+      e.preventDefault()
+      $.ajax({
+         type: this.method,
+         url: this.action,
+         data: $(this).serialize(),
+         headers: {'X-CSRFToken': getCookie('csrftoken')},
+         dataType: 'json',
+         success: function (response) {
+            console.log('okay', response)
+         },
+         error: function (response) {
+            var data = JSON.parse(JSON.stringify(response['responseJSON']));
+            $.each(data['errors'], function( key, value ) {
+               $("#response4").text( value ).append().fadeIn();
            });
          }
       })

@@ -5,8 +5,27 @@
 
 {% if request.user == thisuser %}
 <h1> настройка вашего профиля {{thisuser.username}} </h1>
+
+<form id="resetform2" method="POST" class="input-group" enctype="multipart/form-data">
+   {% csrf_token %}
+   {% for f in form %}
+      <div id="response4" class="errors">{{f.errors}}</div>
+      {{f.label}}{{f}}
+   {% endfor %}
+   <br><button type="submit" id="userupd">change</button></br>
+</form>
+<br></br>
+<br></br>
+<br></br>
+<form id="resetpassword" method="POST" class="input-group">
+   {% csrf_token %}
+   <button type="submit" id="userupd">Изменить пароль</button>
+</form>
+
 {% else %}
-<h1> Хорошие новости, мы не забыли проверку на права доступа в этом месте </h1>
+
+<h1> Хорошие новости, мы не забыли проверку на право доступа в этом месте =/</h1>
+
 {% endif %}
 
 {% endblock %}

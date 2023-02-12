@@ -493,6 +493,7 @@ ul {
 
 .dropdown-content {
   display: none;
+  overflow: hidden;
   position: absolute;
   background-color: #f1f1f1;
   min-width: 40px;

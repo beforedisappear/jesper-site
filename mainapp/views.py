@@ -1,9 +1,9 @@
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.tokens import default_token_generator as gtoken
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.views.generic import ListView, DetailView, UpdateView
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import FormMixin, FormView
-from django.views.generic import ListView, DetailView
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
@@ -29,7 +29,6 @@ class HomePage(ListView, FormMixin):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         #authorization
         if len(request.POST) == 3:
             self.form = self.get_form()
@@ -75,7 +74,7 @@ class HomePage(ListView, FormMixin):
                 return JsonResponse(data={'errors': {'email': 'Некорректный email адрес!'}}, status=400)
             
         else:
-            return HttpResponse('error')
+            return HttpResponse('error!')
     
 
 class economy(ListView):
@@ -166,17 +165,40 @@ class userpage(DetailView):
         return context
     
 
-class userpagesettings(DetailView):
+class userpagesettings(UpdateView):
     model = get_user_model()
     template_name = 'mainapp/psettings.html'
     slug_url_kwarg = 'username'
     slug_field = 'userslug'
+    form_class = UserChangeCustom
     
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)    #получаем сформированный контекст
         context['thisuser'] = get_object_or_404(get_user_model(), userslug=self.kwargs['username'])
         context['title'] = 'Настройки пользователя'
         return context
+    
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('user-page-set', kwargs={'username': self.request.user.username})
+    
+    def post(self, request, *args, **kwargs):
+        if len(request.POST) == 1:
+            send_mail_for_reset(request, request.user)
+            return HttpResponseRedirect(self.get_success_url())
+        
+        form = UserChangeCustom(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            #return HttpResponseRedirect(self.get_success_url())
+            return JsonResponse(data={}, status=201)          
+        else:
+            err = form.errors
+            form = UserChangeCustom()
+            #return HttpResponse('incorrect')
+            return JsonResponse(data={'errors': err, }, status=400)
+        
+class adminpanel(ListView):
+    pass
 
 class EmailVerify(LoginView):
 

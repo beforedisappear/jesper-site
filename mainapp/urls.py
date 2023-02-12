@@ -15,6 +15,7 @@ urlpatterns = [
     path('<slug:section_slug>/article/<slug:post_slug>/', ShowArticle.as_view(), name='article'),
     path('page/<slug:username>/', userpage.as_view(), name='user-page'),
     path('page/<slug:username>/settings', userpagesettings.as_view(), name='user-page-set'),
+    path('adminpanel/<slug:username>/', adminpanel.as_view(), name=""),
     path('account/active/<uidb64>/<token>/', EmailVerify.as_view(), name='userverify'),
     path('account/reset/<uidb64>/<token>/', PasswordResetConfirm.as_view(), name='userpasswordreset'),
     path('social-auth/', include('social_django.urls', namespace='social')),
